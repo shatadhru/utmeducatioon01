@@ -15,12 +15,27 @@ import {
 import { useAuth } from '@/providers/Auth'
 import { MenuIcon } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { LogoIcon } from '../icons/logo';
 
 interface Props {
   menu: Header['navItems']
 }
+
+const navByDefaultLinks = [
+  {
+    name: 'হোম',
+    icon: 'HomeIcon',
+    href: '/',
+  },
+  {
+    name: 'ক্লাসরুম',
+    icon: 'Shapes',
+    href: '/classroom',
+  },
+]
+
 
 export function MobileMenu({ menu }: Props) {
   const { user } = useAuth()
@@ -45,6 +60,9 @@ export function MobileMenu({ menu }: Props) {
     setIsOpen(false)
   }, [pathname, searchParams])
 
+
+  const router = useRouter()
+
   return (
     <Sheet onOpenChange={setIsOpen} open={isOpen}>
       <SheetTrigger className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:bg-black dark:text-white">
@@ -53,12 +71,24 @@ export function MobileMenu({ menu }: Props) {
 
       <SheetContent side="left" className="px-4">
         <SheetHeader className="px-0 pt-4 pb-0">
-          <SheetTitle>My Store</SheetTitle>
+          <SheetTitle> 
+            <LogoIcon />
+          </SheetTitle>
 
           <SheetDescription />
         </SheetHeader>
 
         <div className="py-4">
+           {navByDefaultLinks.map((item) => (
+                  <div key={item.name} className="mb-2">
+                    <a
+                      className="cursor-pointer"
+                      href={item.href}
+                    >
+                      {item.name}
+                    </a>
+                  </div>
+                ))}
           {menu?.length ? (
             <ul className="flex w-full flex-col">
               {menu.map((item) => (

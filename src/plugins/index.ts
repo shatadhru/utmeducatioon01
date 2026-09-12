@@ -15,6 +15,10 @@ import { adminOnlyFieldAccess } from '@/access/adminOnlyFieldAccess'
 import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
+import { payloadTheme } from 'payload-theme'
+import { cloudinaryStorage } from 'payload-cloudinary'
+
+
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
@@ -55,6 +59,7 @@ export const plugins: Plugin[] = [
       admin: {
         group: 'Content',
       },
+      
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
           if ('name' in field && field.name === 'confirmationMessage') {
@@ -76,6 +81,29 @@ export const plugins: Plugin[] = [
       },
     },
   }),
+
+      payloadTheme({ accent: '#0d9488',
+
+logo: {light: 'https://res.cloudinary.com/doqcv0ywi/image/upload/v1788673370/utm_fkrgc8.png', dark: 'https://res.cloudinary.com/doqcv0ywi/image/upload/v1788673373/dark_pn0ylt.pn'}
+    
+
+       }),
+
+         cloudinaryStorage({
+      config: {
+        cloud_name: 'dccbp4dpb',
+        api_key: '433195912561124',
+        api_secret: 'Osh6y17_onFGFT1Wwog0BlhknoU'
+      },
+      collections: {
+        'media': true, // Enable for media collection
+        // Add more collections as needed
+      },
+      folder: 'utmeducation', // Optional, defaults to 'payload-media'
+      disableLocalStorage: true, // Optional, defaults to true
+      enabled: true // Optional, defaults to true
+    }),
+
   ecommercePlugin({
     access: {
       adminOnlyFieldAccess,
