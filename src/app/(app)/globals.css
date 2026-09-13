@@ -267,8 +267,9 @@
   }
 }
 
-html, body { font-family: var(--font-ador-noirit-font), sans-serif; }
-
+html,body {
+  font-family: var(--font-hind-siliguri), sans-serif;
+}
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
