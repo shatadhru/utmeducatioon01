@@ -11,7 +11,6 @@ function page() {
         <Hero />
         <Teacher />
         <Learning />
-        <FreeResourses />
         <Faq />
       
     </div>
