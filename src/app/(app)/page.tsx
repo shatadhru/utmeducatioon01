@@ -1,5 +1,21 @@
-import PageTemplate, { generateMetadata } from './[slug]/page'
+import React from 'react'
+import Hero from './RootComponents/Home/Hero';
+import Learning from './RootComponents/Home/Learning';
+import Faq from './RootComponents/Home/Faq';
+import FreeResourses from './RootComponents/Home/FreeResourses';
+import Teacher from './RootComponents/Home/Teacher';
 
-export default PageTemplate
+function page() {
+  return (
+    <div>
+        <Hero />
+        <Teacher />
+        <Learning />
+        <FreeResourses />
+        <Faq />
+      
+    </div>
+  )
+}
 
-export { generateMetadata }
+export default page

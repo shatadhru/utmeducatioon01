@@ -17,13 +17,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 
 function DropDownMenus({ user }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="default">ড্যাশবোর্ড</Button>
+<Avatar className="w-8 h-8">
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback>CN</AvatarFallback>
+      </Avatar>
+
+
       </DropdownMenuTrigger>
+
 
       <DropdownMenuContent className="w-44" align="start">
         <DropdownMenuItem asChild>

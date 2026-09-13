@@ -14,7 +14,9 @@ import {
 } from '@/components/ui/navigation-menu'
 import UserAccount from '../UserAccount'
 import { Search } from '../Search'
-
+import { Button } from '../ui/button';
+import { PhoneCall } from 'lucide-react';
+import { ThemeSelector } from '@/providers/Theme/ThemeSelector';
 type Props = {
   header: Header
 }
@@ -38,19 +40,19 @@ export function HeaderClient({ header }: Props) {
 
           <NavigationMenu className="hidden pl-6 md:flex">
             <NavigationMenuList>
-              {navByDefaultLinks.map(({ name, href }) => (
-                <NavigationMenuItem key={name}>
+              {navByDefaultLinks.map(({ name, href }, key) => (
+                <NavigationMenuItem key={key}>
                   <NavigationMenuLink asChild>
                     <Link href={href}>{name}</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
 
-              {menu.map(({ link }) => {
+              {menu.map(({ link },key) => {
                 if (!link.url) return null
 
                 return (
-                  <NavigationMenuItem key={link.url}>
+                  <NavigationMenuItem key={key}>
                     <NavigationMenuLink asChild>
                       <Link href={link.url}>{link.label}</Link>
                     </NavigationMenuLink>
@@ -67,9 +69,10 @@ export function HeaderClient({ header }: Props) {
         </div>
 
         {/* Account */}
-        <div className="shrink-0 ml-auto py-4 justify-end">
+        <div className="shrink-0 ml-auto py-4 justify-end flex gap-2">
+          <Button variant="default" className="text-white bg-green-600 hover:bg-green-500"> <PhoneCall /> <span className="hidden md:flex">Helpline</span> </Button>
           <UserAccount />
-        </div>
+        </div> 
       </nav>
     </header>
   )
