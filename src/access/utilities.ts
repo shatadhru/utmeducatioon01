@@ -1,12 +1,12 @@
 import type { User } from '@/payload-types'
 
-export const checkRole = (allRoles: User['roles'] = [], user?: User | null): boolean => {
-  if (user && allRoles) {
-    return allRoles.some((role) => {
-      return user?.roles?.some((individualRole) => {
-        return individualRole === role
-      })
-    })
+type UserWithRoles = Partial<User> & {
+  roles?: string[]
+}
+
+export const checkRole = (allRoles: string[] = [], user?: UserWithRoles | null): boolean => {
+  if (user && allRoles.length > 0) {
+    return allRoles.some((role) => user.role === role)
   }
 
   return false

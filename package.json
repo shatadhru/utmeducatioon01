@@ -22,6 +22,7 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@delmaredigital/payload-better-auth": "^0.13.0",
     "@iconify/react": "^6.0.2",
     "@payloadcms/admin-bar": "3.88.0",
     "@payloadcms/db-mongodb": "3.88.0",
@@ -48,6 +49,7 @@
     "@radix-ui/react-tooltip": "^1.2.16",
     "@stripe/react-stripe-js": "^3",
     "@stripe/stripe-js": "^4.0.0",
+    "better-auth": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cn": "^0.2.6",

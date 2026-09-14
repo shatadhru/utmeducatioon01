@@ -17,8 +17,13 @@ import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 import { payloadTheme } from 'payload-theme'
 import { cloudinaryStorage } from 'payload-cloudinary'
-
-
+import { betterAuthOptions } from '../lib/auth/config';
+import { betterAuth } from "better-auth"
+import {
+  betterAuthCollections,
+  createBetterAuthPlugin,
+  payloadAdapter,
+} from '@delmaredigital/payload-better-auth'
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
@@ -35,6 +40,30 @@ export const plugins: Plugin[] = [
     generateTitle,
     generateURL,
   }),
+
+
+ betterAuthCollections({ betterAuthOptions, skipCollections: ['user'] }),
+
+ 
+    createBetterAuthPlugin({
+      createAuth: (payload) =>
+        betterAuth({
+          ...betterAuthOptions,
+          database: payloadAdapter({ payloadClient: payload }),
+          // Do NOT set advanced.database.generateId
+          secret: process.env.BETTER_AUTH_SECRET,
+          trustedOrigins: ['http://localhost:3000'],
+        }),
+    }),
+
+
+
+
+
+
+
+
+
   formBuilderPlugin({
     fields: {
       payment: false,

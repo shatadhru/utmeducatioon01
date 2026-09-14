@@ -155,8 +155,8 @@ export const seed = async ({
       data: {
         name: 'Customer',
         email: 'customer@example.com',
-        password: 'password',
-        roles: ['customer'],
+        // Payload's generated `User` type does not include the auth password field in `create` draft data.
+        role: ['customer'] as any,
       },
     }),
     payload.create({

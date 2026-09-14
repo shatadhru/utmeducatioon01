@@ -1,89 +1,78 @@
 import type { CollectionConfig } from 'payload'
-
-import { adminOnly } from '@/access/adminOnly'
-import { adminOnlyFieldAccess } from '@/access/adminOnlyFieldAccess'
-import { publicAccess } from '@/access/publicAccess'
-import { adminOrSelf } from '@/access/adminOrSelf'
-import { checkRole } from '@/access/utilities'
-
-import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
+import { betterAuthStrategy } from '@delmaredigital/payload-better-auth'
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  access: {
-    admin: ({ req: { user } }) => checkRole(['admin'], user),
-    create: publicAccess,
-    delete: adminOnly,
-    read: adminOrSelf,
-    unlock: adminOnly,
-    update: adminOrSelf,
+
+  auth: {
+    disableLocalStrategy: true,
+    strategies: [betterAuthStrategy()],
   },
+
+  access: {
+    read: ({ req }) => {
+      if (!req.user) return false
+
+      if (req.user.role === 'admin') {
+        return true
+      }
+
+      return {
+        id: {
+          equals: req.user.id,
+        },
+      }
+    },
+
+    admin: ({ req }) => req.user?.role === 'admin',
+      create: () => true,
+
+  },
+
   admin: {
     group: 'Users',
-    defaultColumns: ['name', 'email', 'roles'],
+    defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'name',
   },
-  auth: {
-    tokenExpiration: 1209600,
-  },
+
   fields: [
+    {
+      name: 'email',
+      type: 'email',
+      required: true,
+      unique: true,
+    },
+
+    {
+      name: 'emailVerified',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+
     {
       name: 'name',
       type: 'text',
     },
+
     {
-      name: 'roles',
+      name: 'image',
+      type: 'text',
+    },
+
+    {
+      name: 'role',
       type: 'select',
-      access: {
-        create: adminOnlyFieldAccess,
-        read: adminOnlyFieldAccess,
-        update: adminOnlyFieldAccess,
-      },
-      defaultValue: ['customer'],
-      hasMany: true,
-      hooks: {
-        beforeChange: [ensureFirstUserIsAdmin],
-      },
+      defaultValue: 'user',
       options: [
         {
-          label: 'admin',
-          value: 'admin',
+          label: 'User',
+          value: 'user',
         },
         {
-          label: 'customer',
-          value: 'customer',
+          label: 'Admin',
+          value: 'admin',
         },
       ],
-    },
-    {
-      name: 'orders',
-      type: 'join',
-      collection: 'orders',
-      on: 'customer',
-      admin: {
-        allowCreate: false,
-        defaultColumns: ['id', 'createdAt', 'total', 'currency', 'items'],
-      },
-    },
-    {
-      name: 'cart',
-      type: 'join',
-      collection: 'carts',
-      on: 'customer',
-      admin: {
-        allowCreate: false,
-        defaultColumns: ['id', 'createdAt', 'total', 'currency', 'items'],
-      },
-    },
-    {
-      name: 'addresses',
-      type: 'join',
-      collection: 'addresses',
-      on: 'customer',
-      admin: {
-        allowCreate: false,
-        defaultColumns: ['id'],
-      },
     },
   ],
 }

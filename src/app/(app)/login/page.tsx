@@ -9,6 +9,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { LoginForm } from '@/components/forms/LoginForm'
 import { redirect } from 'next/navigation'
+import { GoogleAuthButton } from '../../../components/custom/GoogleAuthButton';
 
 export default async function Login() {
   const headers = await getHeaders()
@@ -30,6 +31,7 @@ export default async function Login() {
           <Link href="/admin/collections/users">login to the admin dashboard</Link>.
         </p>
         <LoginForm />
+        <GoogleAuthButton />
       </div>
     </div>
   )

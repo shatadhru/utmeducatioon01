@@ -3,13 +3,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, type Variants } from "motion/react";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import StepsforCourse from "@/components/shadcn-space/badge/badge-08 copy";
 import { AnimatedBadge } from "@/components/shadcn-space/badge/badge-08";
 
 type LearningStep = {
@@ -64,22 +61,6 @@ const learningSteps: LearningStep[] = [
   },
 ];
 
-const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 35,
-  },
-  visible: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: index * 0.1,
-      duration: 0.55,
-      ease: "easeOut",
-    },
-  }),
-};
-
 const Services = () => {
   return (
     <section className="relative overflow-hidden bg-background py-16 sm:py-20 lg:py-24">
@@ -94,7 +75,7 @@ const Services = () => {
         <div className="flex flex-col items-center gap-10 sm:gap-14">
           {/* Heading */}
           <div className="flex max-w-3xl flex-col items-center text-center">
-<AnimatedBadge label="সহজ শেখার পদ্ধতি" />
+            <AnimatedBadge label="সহজ শেখার পদ্ধতি" />
 
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               শেখার প্রতিটি ধাপ হোক{" "}
@@ -109,64 +90,57 @@ const Services = () => {
 
           {/* Learning Steps */}
           <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {learningSteps.map((step, index) => (
-              <motion.div
+            {learningSteps.map((step) => (
+              <Card
                 key={step.number}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-80px" }}
-                custom={index}
-                className="h-full"
+                className="group h-full overflow-hidden rounded-3xl border-border/60 bg-card p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl"
               >
-                <Card className="group h-full overflow-hidden rounded-3xl border-border/60 bg-card p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl">
-                  <CardContent className="flex h-full flex-col p-0">
-                    {/* Image */}
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/20">
-                      <Image
-                        src={step.image}
-                        alt={step.title}
-                        fill
-                        className="object-contain p-4 transition-transform duration-500 group-hover:scale-105 sm:p-5"
-                        sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 20vw"
-                      />
+                <CardContent className="flex h-full flex-col p-0">
+                  {/* Image */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/20">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      className="object-contain p-4 transition-transform duration-500 group-hover:scale-105 sm:p-5"
+                      sizes="(max-width: 640px) 85vw, (max-width: 1024px) 40vw, 20vw"
+                    />
 
-                      {/* Number */}
-                      <div className="absolute left-4 top-4 flex size-9 items-center justify-center rounded-full border border-primary/20 bg-background/90 text-xs font-bold text-primary shadow-sm backdrop-blur">
-                        {step.number}
-                      </div>
-
-                      {/* Image overlay */}
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/20 to-transparent" />
+                    {/* Number */}
+                    <div className="absolute left-4 top-4 flex size-9 items-center justify-center rounded-full border border-primary/20 bg-background/90 text-xs font-bold text-primary shadow-sm backdrop-blur">
+                      {step.number}
                     </div>
 
-                    {/* Content */}
-                    <div className="flex flex-1 flex-col p-5 sm:p-6">
-                      <h3 className="text-lg font-bold tracking-tight sm:text-xl">
-                        {step.title}
-                      </h3>
+                    {/* Image overlay */}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background/20 to-transparent" />
+                  </div>
 
-                      <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
-                        {step.description}
-                      </p>
+                  {/* Content */}
+                  <div className="flex flex-1 flex-col p-5 sm:p-6">
+                    <h3 className="text-lg font-bold tracking-tight sm:text-xl">
+                      {step.title}
+                    </h3>
 
-                      {/* Button */}
-                      <Button
-                        asChild
-                        className="group/button mt-6 h-11 w-full rounded-full"
-                      >
-                        <Link href={step.href}>
-                          <span>{step.button}</span>
+                    <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
+                      {step.description}
+                    </p>
 
-                          <span className="ml-auto flex size-8 items-center justify-center rounded-full bg-background text-foreground transition-transform duration-300 group-hover/button:rotate-45">
-                            <ArrowUpRight className="size-4" />
-                          </span>
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                    {/* Button */}
+                    <Button
+                      asChild
+                      className="group/button mt-6 h-11 w-full rounded-full"
+                    >
+                      <Link href={step.href}>
+                        <span>{step.button}</span>
+
+                        <span className="ml-auto flex size-8 items-center justify-center rounded-full bg-background text-foreground transition-transform duration-300 group-hover/button:rotate-45">
+                          <ArrowUpRight className="size-4" />
+                        </span>
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

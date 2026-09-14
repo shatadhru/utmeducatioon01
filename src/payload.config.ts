@@ -24,11 +24,13 @@ import { Header } from '@/globals/Header'
 import { plugins } from './plugins'
 import { logout } from '@payloadcms/next/auth';
 
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
@@ -44,9 +46,8 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Pages, Categories, Media],
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URL || '',
-  }),
+  db: mongooseAdapter({ url: process.env.DATABASE_URL! }),
+
   editor: lexicalEditor({
     features: () => {
       return [

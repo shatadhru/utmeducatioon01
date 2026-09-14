@@ -1,21 +1,41 @@
 'use client'
 
+import {
+    authClient,
+  signIn,
+  signOut,
+  signUp,
+  useSession,
+} from '@/lib/auth/client'
 import type { User } from '@/payload-types'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-
-// eslint-disable-next-line no-unused-vars
 type ResetPassword = (args: {
   password: string
   passwordConfirm: string
   token: string
 }) => Promise<void>
 
-type ForgotPassword = (args: { email: string }) => Promise<void> // eslint-disable-line no-unused-vars
+type ForgotPassword = (args: {
+  email: string
+}) => Promise<void>
 
-type Create = (args: { email: string; password: string; passwordConfirm: string }) => Promise<void> // eslint-disable-line no-unused-vars
+type Create = (args: {
+  email: string
+  password: string
+  passwordConfirm: string
+}) => Promise<void>
 
-type Login = (args: { email: string; password: string }) => Promise<User> // eslint-disable-line no-unused-vars
+type Login = (args: {
+  email: string
+  password: string
+}) => Promise<User>
 
 type Logout = () => Promise<void>
 
@@ -25,175 +45,123 @@ type AuthContext = {
   login: Login
   logout: Logout
   resetPassword: ResetPassword
-  setUser: (user: User | null) => void // eslint-disable-line no-unused-vars
+  setUser: (user: User | null) => void
   status: 'loggedIn' | 'loggedOut' | undefined
   user?: User | null
 }
 
 const Context = createContext({} as AuthContext)
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{
+  children: React.ReactNode
+}> = ({ children }) => {
   const [user, setUser] = useState<User | null>()
+  const [status, setStatus] = useState<
+    'loggedIn' | 'loggedOut' | undefined
+  >()
 
-  // used to track the single event of logging in or logging out
-  // useful for `useEffect` hooks that should only run once
-  const [status, setStatus] = useState<'loggedIn' | 'loggedOut' | undefined>()
+  const { data: session, isPending } = useSession()
 
-
-  const create = useCallback<Create>(async (args) => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/create`, {
-        body: JSON.stringify({
-          email: args.email,
-          password: args.password,
-          passwordConfirm: args.passwordConfirm,
-        }),
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-      if (res.ok) {
-        const { data, errors } = await res.json()
-        if (errors) throw new Error(errors[0].message)
-        setUser(data?.loginUser?.user)
-        setStatus('loggedIn')
-      } else {
-        throw new Error('Invalid login')
-      }
-    } catch (e) {
-      throw new Error('An error occurred while attempting to login.')
-    }
-  }, [])
-
-  const login = useCallback<Login>(async (args) => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`, {
-        body: JSON.stringify({
-          email: args.email,
-          password: args.password,
-        }),
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-
-      if (res.ok) {
-        const { errors, user } = await res.json()
-        if (errors) throw new Error(errors[0].message)
-        setUser(user)
-        setStatus('loggedIn')
-        return user
-      }
-
-      throw new Error('Invalid login')
-    } catch (e) {
-      throw new Error('An error occurred while attempting to login.')
-    }
-  }, [])
-
-  const logout = useCallback<Logout>(async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-
-      if (res.ok) {
-        setUser(null)
-        setStatus('loggedOut')
-      } else {
-        throw new Error('An error occurred while attempting to logout.')
-      }
-    } catch (e) {
-      throw new Error('An error occurred while attempting to logout.')
-    }
-  }, [])
-
+  // Keep local auth state synced with Better Auth session
   useEffect(() => {
-    const fetchMe = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`, {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'GET',
-        })
+    if (isPending) return
 
-        if (res.ok) {
-          const { user: meUser } = await res.json()
-          setUser(meUser || null)
-          setStatus(meUser ? 'loggedIn' : undefined)
-        } else {
-          throw new Error('An error occurred while fetching your account.')
-        }
-      } catch (e) {
-        setUser(null)
-        throw new Error('An error occurred while fetching your account.')
-      }
+    if (session?.user) {
+      setUser(session.user as unknown as User)
+      setStatus('loggedIn')
+    } else {
+      setUser(null)
+      setStatus('loggedOut')
+    }
+  }, [session, isPending])
+
+  // Create account
+  const create = useCallback<Create>(async (args) => {
+    if (args.password !== args.passwordConfirm) {
+      throw new Error('Passwords do not match')
     }
 
-    void fetchMe()
+    const { data, error } = await signUp.email({
+      email: args.email,
+      password: args.password,
+      name: args.email.split('@')[0],
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    if (!data?.user) {
+      throw new Error('Account creation failed')
+    }
+
+    setUser(data.user as unknown as User)
+    setStatus('loggedIn')
   }, [])
 
+  // Login
+  const login = useCallback<Login>(async (args) => {
+    const { data, error } = await signIn.email({
+      email: args.email,
+      password: args.password,
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    if (!data?.user) {
+      throw new Error('Login failed')
+    }
+
+    const loggedInUser = data.user as unknown as User
+
+    setUser(loggedInUser)
+    setStatus('loggedIn')
+
+    return loggedInUser
+  }, [])
+
+  // Logout
+  const logout = useCallback<Logout>(async () => {
+    const { error } = await signOut()
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    setUser(null)
+    setStatus('loggedOut')
+  }, [])
+
+  // Forgot password
   const forgotPassword = useCallback<ForgotPassword>(async (args) => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/forgot-password`, {
-        body: JSON.stringify({
-          email: args.email,
-        }),
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
+    const { error } = await authClient.requestPasswordReset({
+      email: args.email,
+      redirectTo: '/reset-password',
+    })
 
-      if (res.ok) {
-        const { data, errors } = await res.json()
-        if (errors) throw new Error(errors[0].message)
-        setUser(data?.loginUser?.user)
-      } else {
-        throw new Error('Invalid login')
-      }
-    } catch (e) {
-      throw new Error('An error occurred while attempting to login.')
+    if (error) {
+      throw new Error(error.message)
     }
   }, [])
 
+  // Reset password
   const resetPassword = useCallback<ResetPassword>(async (args) => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/reset-password`, {
-        body: JSON.stringify({
-          password: args.password,
-          passwordConfirm: args.passwordConfirm,
-          token: args.token,
-        }),
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      })
-
-      if (res.ok) {
-        const { data, errors } = await res.json()
-        if (errors) throw new Error(errors[0].message)
-        setUser(data?.loginUser?.user)
-        setStatus(data?.loginUser?.user ? 'loggedIn' : undefined)
-      } else {
-        throw new Error('Invalid login')
-      }
-    } catch (e) {
-      throw new Error('An error occurred while attempting to login.')
+    if (args.password !== args.passwordConfirm) {
+      throw new Error('Passwords do not match')
     }
+
+    const { error } = await authClient.resetPassword({
+      newPassword: args.password,
+      token: args.token,
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    setStatus('loggedOut')
   }, [])
 
   return (
@@ -214,6 +182,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   )
 }
 
-type UseAuth<T = User> = () => AuthContext // eslint-disable-line no-unused-vars
+type UseAuth<T = User> = () => AuthContext
 
 export const useAuth: UseAuth = () => useContext(Context)
