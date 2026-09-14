@@ -1,4 +1,4 @@
-
+"use client"
 
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
+import { CldImage } from "next-cloudinary";
 
 function Teacher() {
   return (
@@ -61,13 +62,15 @@ function Teacher() {
                 <div className="absolute -bottom-20 -right-20 size-64 rounded-full bg-primary/10" />
 
                 <div className="absolute inset-x-8 bottom-0 top-8 overflow-hidden rounded-t-[2rem]">
-                  <Image
-                    src="https://res.cloudinary.com/doqcv0ywi/image/upload/v1789307398/Gemini_Generated_Image_1wos3a1wos3a1wos_rcbrzu.jpg"
-                    alt="দেলোয়ার হোসেন"
-                    fill
-                    className="object-cover object-top pb-10 transition-transform duration-500 hover:scale-[1.02] rounded-2xl"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
+                  <CldImage
+  width={960}
+  height={600}
+                    src="https://res.cloudinary.com/dccbp4dpb/image/upload/v1789397957/Gemini_Generated_Image_1wos3a1wos3a1wos_lvk1gm.jpg"
+
+  sizes="100vw"
+  alt="দেলোয়ার হোসেন"
+  className="object-cover object-top pb-10 transition-transform duration-500 hover:scale-[1.02] rounded-2xl"
+/>
                 </div>
 
                 {/* Experience Badge */}

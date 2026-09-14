@@ -120,9 +120,9 @@ logo: {light: 'https://res.cloudinary.com/doqcv0ywi/image/upload/v1788673370/utm
 
          cloudinaryStorage({
       config: {
-        cloud_name: 'dccbp4dpb',
-        api_key: '433195912561124',
-        api_secret: 'Osh6y17_onFGFT1Wwog0BlhknoU'
+        cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dccbp4dpb",
+        api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '433195912561124',
+        api_secret: process.env.CLOUDINARY_API_SECRET || "Osh6y17_onFGFT1Wwog0BlhknoU"
       },
       collections: {
         'media': true, // Enable for media collection

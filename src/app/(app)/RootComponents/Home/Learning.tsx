@@ -8,6 +8,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedBadge } from "@/components/shadcn-space/badge/badge-08";
+import { CldImage } from "next-cloudinary";
 
 type LearningStep = {
   number: string;
@@ -22,7 +23,7 @@ const learningSteps: LearningStep[] = [
   {
     number: "০১",
     image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789278926/Gemini_Generated_Image_5brpm55brpm55brp_lnk2qv.jpg",
+      "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789398084/Gemini_Generated_Image_5brpm55brpm55brp_a5tnix.jpg",
     title: "কোর্স নির্বাচন করুন",
     description:
       "আপনার লক্ষ্য ও প্রয়োজন অনুযায়ী পছন্দের কোর্সটি বেছে নিন।",
@@ -32,7 +33,7 @@ const learningSteps: LearningStep[] = [
   {
     number: "০২",
     image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789307995/Gemini_Generated_Image_yo0vhryo0vhryo0v_fhlev1.jpg",
+      "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789398086/Gemini_Generated_Image_yo0vhryo0vhryo0v_zypixm.jpg",
     title: "ক্লাস করুন",
     description:
       "সহজ ও কার্যকর পাঠদানের মাধ্যমে প্রতিটি বিষয় বুঝে শিখুন।",
@@ -42,7 +43,7 @@ const learningSteps: LearningStep[] = [
   {
     number: "০৩",
     image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789279116/Gemini_Generated_Image_72e96e72e96e72e9_lhweil.jpg",
+      "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789398086/Gemini_Generated_Image_72e96e72e96e72e9_3_i1bheo.jpg",
     title: "অনুশীলন করুন",
     description:
       "নিয়মিত অনুশীলনের মাধ্যমে শেখা বিষয়গুলো আরও শক্তিশালী করুন।",
@@ -52,7 +53,7 @@ const learningSteps: LearningStep[] = [
   {
     number: "০৪",
     image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789279276/Gemini_Generated_Image_ilbmxlilbmxlilbm_urlxhv.jpg",
+      "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789398081/Gemini_Generated_Image_ilbmxlilbmxlilbm_1_xiqlwp.jpg",
     title: "পরিক্ষা দিন",
     description:
       "নিয়মিত শেখা ও অনুশীলনের মাধ্যমে আত্মবিশ্বাসের সঙ্গে লক্ষ্যে পৌঁছান।",
@@ -98,7 +99,7 @@ const Services = () => {
                 <CardContent className="flex h-full flex-col p-0">
                   {/* Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/20">
-                    <Image
+                    <CldImage
                       src={step.image}
                       alt={step.title}
                       fill

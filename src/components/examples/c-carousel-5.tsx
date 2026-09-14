@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { CldImage } from "next-cloudinary";
 
 const images = [
     "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789276947/UTM-math-cover-1536x864_tplfis.webp",
@@ -44,7 +45,7 @@ export function Pattern() {
               className="basis-full pl-3 sm:basis-1/2 lg:basis-1/3"
             >
               <Card className="group relative overflow-hidden rounded-2xl border-0 p-0 shadow-sm">
-                <img
+                <CldImage
                   src={image}
                   alt={`Course ${index + 1}`}
                   width={800}
